@@ -5,7 +5,7 @@ const app = express();
 
 const PORT = 8383
 
-let data =['Rafsan Alam']
+let data =['Rafsan ']
 
 // Middleware
 app.use(express.json())
@@ -27,7 +27,7 @@ app.get('/', (req,res)=>{
            <p>${JSON.stringify(data)} </p>
            <a href= "/dashboard">Dashboard</a>
            </body>
-           <script>console.log('This is my script') </script>
+           <script>console.log('This is my script.') </script>
         `)
 })
 
