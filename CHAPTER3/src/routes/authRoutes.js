@@ -31,9 +31,9 @@ router.post('/register',(req,res)=>{
                     res.json({token})
 
 
-    } catch (error) {
+    } catch (err) {
         console.log(err.message)
-        res.sendStatus(583)
+        res.sendStatus(503)
     } 
 
 })
@@ -42,6 +42,35 @@ router.post('/login',(req,res)=>{
     // we get their email and we look up the password associated with that email in that database
     // but we get it back and see it's encrypted which  means that we cannot
     //compare it to the one the user just used to login
+
+     const {username,password} = req.body
+
+     try {
+        const getUser = db.prepare('SELECT * FROM users WHERE username= ?')
+        const user = getUser.get(username)
+
+        // if we cannot find a user associated with the username ,
+        //return out from function
+        if(!user)
+        {return res.status(404).send({messege:"User not found"})
+
+        }
+
+     const passwordIsValid = bcrypt.compareSync(password,user.password)
+     // if this password does not match, return out of the function
+     if(!passwordIsValid){return res.status(401).send({messege:"Invalid password"})} 
+     
+     console.log(user)
+     // then we have a successful authentication
+     const token = jwt.sign({id:user.id},process.env.JWT_SECRET,{expiresIn:'24hr'})
+    res.json({token})
+
+
+    } catch (err) {
+        console.log(err.message)
+        res.sendStatus(503)
+     }
+
 })
 
 export default router;
